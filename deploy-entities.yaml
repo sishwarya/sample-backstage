@@ -1,0 +1,167 @@
+---
+apiVersion: backstage.io/v1alpha1
+kind: Domain
+metadata:
+  name: digital-ai-devops
+  description: Everything about devops
+spec:
+  owner: deploy-team
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: dai-deploy-system
+  description: Deployment management tools.
+spec:
+  owner: deploy-team
+  domain: digital-ai-devops
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: deploy-db
+  description: Stores Deployment related info like application, env and infra in database.
+spec:
+  type: database
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: deploy-mq
+  description: jms queue
+spec:
+  type: mq
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: deploy-applicationStatusService-api
+  description: Retrieve deploy application status
+spec:
+  type: openapi
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+  definition: |
+    syntax = "proto3";
+
+    service Exampler {
+      rpc Example (ExampleMessage) returns (ExampleMessage) {};
+    }
+
+    message ExampleMessage {
+      string example = 1;
+    };
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: deploy-repositoryService-api
+  description: Retrieve deploy ci details
+spec:
+  type: openapi
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+  definition: |
+    syntax = "proto3";
+
+    service Exampler {
+      rpc Example (ExampleMessage) returns (ExampleMessage) {};
+    }
+
+    message ExampleMessage {
+      string example = 1;
+    };
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deploy-core
+  description: Deploy core system
+spec:
+  type: website
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+  dependsOn:
+    - resource:default/deploy-db
+    - resource:default/deploy-mq
+    - component:default/deploy-cc
+    - component:default/deploy-cache
+    - component:default/deploy-permission
+  providesApis:
+    - deploy-repositoryService-api
+    - deploy-applicationStatusService-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deploy-cc
+  description: Deploy central configuration
+spec:
+  type: service
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deploy-permission
+  description: Deploy permission
+spec:
+  type: service
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deploy-cache
+  description: Deploy cache
+spec:
+  type: service
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: deploy-integration-plugin
+  description: Deploy Integration plugin
+spec:
+  type: library
+  lifecycle: production
+  owner: deploy-team
+  system: dai-deploy-system
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: deploy-team
+  description: The deploy team
+spec:
+  type: team
+  profile:
+    displayName: Deploy Team
+  children: []
+  members:
+    - ishwarya
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: ishwarya
+spec:
+  profile:
+    displayName: Ishwarya Surendrababu
+    email: ishwarya.surendrababu@digital.ai
+    picture: https://example.com/staff/jenny-with-party-hat.jpeg
+  memberOf: [deploy-team]
