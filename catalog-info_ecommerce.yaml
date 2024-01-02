@@ -19,7 +19,7 @@ spec:
   lifecycle: experimental
   owner: ecommerce-owner
   system: ecommerce
-  consumesApis: [payment-api]
+  consumesApis: [payment-api, hello-world-trpc]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
