@@ -21,27 +21,6 @@ spec:
   system: ecommerce
   consumesApis: [payment-api, hello-world-trpc]
 ---
-# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
-apiVersion: backstage.io/v1alpha1
-kind: API
-metadata:
-  name: payment-api
-spec:
-  type: grpc
-  lifecycle: experimental
-  owner: abc-bank
-  system: banking
-  definition: |
-    syntax = "proto3";
-
-    service Payment {
-      rpc Payment (PaymentMessage) returns (PaymentMessage) {};
-    }
-
-    message PaymentMessage {
-      string example = 1;
-    };
----
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-user
 apiVersion: backstage.io/v1alpha1
 kind: User
